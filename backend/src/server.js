@@ -1,7 +1,12 @@
 const express = require("express");
 const PORT = 3000;
 const app = express();
+const cors = require("cors")
 require('dotenv').config();
+
+app.use(cors({
+    origin: "http://localhost:5173",
+}));
 
 app.get('/api/weather', async (req, res) => {
     const city = req.query.city;
