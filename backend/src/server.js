@@ -57,6 +57,19 @@ app.get('/api/history', async (req, res) => {
     res.json(history);
 });
 
+app.get('/api/history/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const historyItem = await WeatherHistory.findById(id);
+        if (!historyItem) {
+            return res.status(404).json({message: "History item not found"});
+        }
+        res.status(200).json(historyItem);
+    } catch (error) {
+        res.status(500).json({message: "Server error"});
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log(`Example is running on http://localhost:${PORT}/api/weather?city=berlin`);
