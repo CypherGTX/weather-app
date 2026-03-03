@@ -13,13 +13,13 @@ type WeatherData = {
 function Weather() {
 
     const [city, setCity] = useState<string>("");
-    const [weatherData,setWeatherData] = useState<WeatherData | null>(null);
+    const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
 
-    const handleKeyDown = (e:any) =>{
+    const handleKeyDown = (e: any) => {
         e.preventDefault();
         void search(city);
     };
-    const search = async (city:string)=>{
+    const search = async (city: string) => {
 
         try {
             const url = `http://localhost:3000/api/weather?city=${city}`;
@@ -27,15 +27,32 @@ function Weather() {
             const data = await response.json();
             console.log(data)
 
-            if(!response.ok){
+            if (!response.ok) {
                 setWeatherData(null);
                 // customData = data;
                 alert(data.message);
                 return;
             }
+
+            if (response.ok) {
+                await fetch("http://localhost:3000/api/history", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        location: data.location,
+                        temperature: data.temperature,
+                        humidity: data.humidity,
+                        windSpeed: data.windSpeed,
+                        weatherStatus: data.weatherStatus,
+                    })
+                })
+            }
+
             setWeatherData(data as WeatherData);
 
-        } catch (error){
+        } catch (error) {
             setWeatherData(null);
             console.error("Error in fetching weather data")
         }
