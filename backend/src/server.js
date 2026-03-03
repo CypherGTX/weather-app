@@ -53,8 +53,15 @@ app.post('/api/history', async (req, res) => {
 })
 
 app.get('/api/history', async (req, res) => {
+    const city = req.query.city;
     const history = await WeatherHistory.find().sort({ date: -1 }); // Останні запити зверху
-    res.json(history);
+    // let result = history;
+    city && city.length>0 ? res.json(history.filter(item => item.location.toLowerCase() === city)) : res.json(history);
+    // if (city) {
+    //     result = history.filter(item => item.location === city);
+    // }
+    // res.json(result);
+
 });
 
 app.get('/api/history/:id', async (req, res) => {
