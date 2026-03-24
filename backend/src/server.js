@@ -1,20 +1,27 @@
-const express = require("express");
-const PORT = 3000;
-const app = express();
-const cors = require("cors")
-const mongoose = require("mongoose");
-require('dotenv').config();
-const WeatherHistory = require('./models/History');
+import express from "express";
+import cors from "cors";
+import "dotenv/config.js"
 
+const app = express();
+import {db} from "./db.js";
+
+const PORT = 3000;
 app.use(cors({
     origin: "http://localhost:5173",
 }));
 
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch((err) => console.error("Error connecting to MongoDB:", err));
+const test = async () => {
+    try {
+        const [rows] = await db.query('SELECT 1 + 1');
+        console.log("Database connected");
+    } catch (err) {
+        console.error('Error connecting to the database:', err);
+    }
+};
+
+test();
 
 app.get('/api/weather', async (req, res) => {
     const city = req.query.city;
@@ -24,8 +31,6 @@ app.get('/api/weather', async (req, res) => {
         const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
         const response = await fetch(url);
         const data = await response.json();
-
-        // console.log(data);
 
         res.json({
             location: data.name,
@@ -40,41 +45,21 @@ app.get('/api/weather', async (req, res) => {
     }
 });
 
-app.post('/api/history', async (req, res) => {
-
+app.post("/api/history", async (req, res) => {
     try {
-        const newRecord = new WeatherHistory(req.body);
-        await newRecord.save();
-        res.status(201).json(newRecord);
+        const {location, temperature, humidity, windSpeed, weatherStatus} = req.body;
+        const sql = "INSERT INTO history_items (Location, Status, Temperature, Humidity, WindSpeed) VALUES (?, ?, ?, ?, ?)";
+        await db.execute(sql, [location, weatherStatus, temperature, humidity, windSpeed]);
+        res.status(201).json({message: "Item added successfully", time: new Date()});
     } catch (err) {
-        res.status(400).json({ error: "Saving error" });
+        res.status(500).json({error: "Saving error"});
     }
-
 })
 
-app.get('/api/history', async (req, res) => {
-    const city = req.query.city;
-    const history = await WeatherHistory.find().sort({ date: -1 }); // Останні запити зверху
-    // let result = history;
-    city && city.length>0 ? res.json(history.filter(item => item.location.toLowerCase() === city)) : res.json(history);
-    // if (city) {
-    //     result = history.filter(item => item.location === city);
-    // }
-    // res.json(result);
+app.get("/api/history", async (req, res) => {
+    const [rows] = await db.query("SELECT * FROM history_items");
 
-});
-
-app.get('/api/history/:id', async (req, res) => {
-    try {
-        const id = req.params.id;
-        const historyItem = await WeatherHistory.findById(id);
-        if (!historyItem) {
-            return res.status(404).json({message: "History item not found"});
-        }
-        res.status(200).json(historyItem);
-    } catch (error) {
-        res.status(500).json({message: "Server error"});
-    }
+    res.json(rows);
 })
 
 app.listen(PORT, () => {
