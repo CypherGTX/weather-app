@@ -1,0 +1,59 @@
+name: cypher-weather-app
+
+services:
+  backend:
+    container_name: wapp-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: mariadb
+      DB_USER: ${DB_USER}           # cypher
+      DB_PASSWORD: ${DB_PASSWORD}   # cypher-password
+      DB_NAME: ${DB_DATABASE}       # weather_app
+      APP_ID: ${API_KEY}           # 1234567890
+    expose:
+      - 3000
+    env_file: .env
+    depends_on:
+      - mariadb
+    networks:
+      - internal-net
+
+  frontend:
+    container_name: wapp-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    env_file: .env
+    depends_on:
+      - backend
+    networks:
+      - public-net
+      - internal-net
+
+  mariadb:
+    image: mariadb
+    container_name: wapp-mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}   # Set the root password
+      MARIADB_DATABASE: ${DB_DATABASE}             # (Optional) Create a default database
+      MARIADB_USER: ${DB_USER}                     # (Optional) Create a default user
+      MARIADB_PASSWORD: ${DB_PASSWORD}             # (Optional) Set the default user's password
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - public-net
+      - internal-net
+
+volumes:
+  mariadb-data:
+
+networks:
+  public-net:
+    driver: bridge
+  internal-net:

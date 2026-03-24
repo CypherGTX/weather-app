@@ -6,9 +6,9 @@ const app = express();
 import {db} from "./db.js";
 
 const PORT = 3000;
-app.use(cors({
-    origin: "http://localhost:5173",
-}));
+// app.use(cors({
+//     origin: "http://frontend:80",
+// }));
 
 app.use(express.json());
 
@@ -41,7 +41,7 @@ app.get('/api/weather', async (req, res) => {
         })
 
     } catch (error) {
-        res.status(500).json({message: "Server error"});
+        res.status(500).json({message: "Server error", error: error.message});
     }
 });
 
