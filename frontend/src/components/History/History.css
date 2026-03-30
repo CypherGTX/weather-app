@@ -1,0 +1,17 @@
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+}
+th,td {
+    border: 1px solid #ccc;
+    padding: 5px;
+    text-align: left;
+}
+
+.search-input {
+    padding: 10px 10px 10px 15px;
+    border: 1px solid #ccc;
+    background: rgba(255,255,255,0.2);
+    border-radius: 5px;
+}
