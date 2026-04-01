@@ -57,7 +57,20 @@ app.post("/api/history", async (req, res) => {
 })
 
 app.get("/api/history", async (req, res) => {
-    const [rows] = await db.query("SELECT * FROM history_items");
+    const { city, date } = req.query;
+
+    let sql = "SELECT * FROM history_items WHERE 1=1";
+    const params = [];
+
+    if (city) {
+        sql += " AND Location LIKE ?";
+        params.push(`%${city}%`);
+    }
+    if (date) {
+        sql += " AND DATE(created_at) = ?";
+        params.push(date);
+    }
+    const [rows] = await db.query(sql, params);
 
     res.json(rows);
 })

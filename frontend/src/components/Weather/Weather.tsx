@@ -67,12 +67,13 @@ function Weather() {
     return (
         <div className="weather">
             <h1>Weather</h1>
-            <form className="search-bar" onSubmit={handleKeyDown}>
+            <form className="search-bar mb-5" onSubmit={handleKeyDown}>
                 <input
                     type="text"
                     placeholder="Search"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
+                    className="search-input"
                 />
                 <button type="submit">Send</button>
             </form>
@@ -97,7 +98,7 @@ function Weather() {
                     </div>
                     <div className="weather-wind">
                         <span className="title">Wind Speed: </span>
-                        <span className="value">{weatherData.windSpeed} km/h</span>
+                        <span className="value">{weatherData.windSpeed} m/s</span>
                     </div>
                 </div>
             )}
