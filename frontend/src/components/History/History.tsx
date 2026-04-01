@@ -26,7 +26,7 @@ function History() {
       if (overrideDate) params.append("date", overrideDate);
 
       const query = params.toString();
-      const url = `http://localhost:3000/api/history${query ? `?${query}` : ""}`;
+      const url = `/api/history${query ? `?${query}` : ""}`;
 
       const response = await fetch(url);
       const data = await response.json();
