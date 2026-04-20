@@ -10,8 +10,9 @@ services:
       DB_HOST: mariadb
       DB_USER: ${DB_USER}           # cypher
       DB_PASSWORD: ${DB_PASSWORD}   # cypher-password
-      DB_NAME: ${DB_DATABASE}       # weather_app
-      APP_ID: ${API_KEY}            # 1234567890
+      DB_NAME: ${DB_NAME}       # weather_app
+      API_KEY: ${API_KEY}            # 1234567890
+      USE_CORS: "false"
     expose:
       - 3000
     env_file: .env
@@ -25,6 +26,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    environment:
+      VITE_BACKEND_URL: "/api"
     ports:
       - 8080:80
     env_file: .env
@@ -39,7 +42,7 @@ services:
     container_name: wapp-mariadb
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}   # Set the root password
-      MARIADB_DATABASE: ${DB_DATABASE}             # (Optional) Create a default database
+      MARIADB_DATABASE: ${DB_NAME}             # (Optional) Create a default database
       MARIADB_USER: ${DB_USER}                     # (Optional) Create a default user
       MARIADB_PASSWORD: ${DB_PASSWORD}             # (Optional) Set the default user's password
     volumes:
