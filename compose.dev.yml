@@ -3,7 +3,7 @@ name: cypher-weather-app
 services:
 
   frontend:
-    build: null
+    build: !reset null
     image: node:current-alpine
     container_name: wapp-frontend-dev
     working_dir: /app
@@ -19,7 +19,7 @@ services:
       - internal-net
 
   backend:
-    build: null
+    build: !reset null
     image: node:current-alpine
     container_name: wapp-backend-dev
     working_dir: /app
