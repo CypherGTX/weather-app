@@ -9,7 +9,6 @@ FROM base AS build
 # Install all dependencies (including devDependencies) for building
 RUN npm ci 
 COPY . .
-COPY ../.env ./.env
 
 # Stage 3: Production - Final slim image
 FROM node:current-alpine AS production
