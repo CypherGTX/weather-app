@@ -14,7 +14,6 @@ function Weather() {
 
     const [city, setCity] = useState<string>("");
     const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-    const backend_url = import.meta.env.VITE_BACKEND_URL;
 
     const handleKeyDown = (e: any) => {
         e.preventDefault();
@@ -23,14 +22,12 @@ function Weather() {
     const search = async (city: string) => {
 
         try {
-            const url = `${backend_url}/weather?city=${encodeURIComponent(city)}`;
+            const url = `/api/weather?city=${encodeURIComponent(city)}`;
             const response = await fetch(url);
             const data = await response.json();
             console.log(data)
 
             if (!response.ok) {
-            console.log(backend_url)
-
                 setWeatherData(null);
                 // customData = data;
                 alert(data.message);
@@ -38,9 +35,7 @@ function Weather() {
             }
 
             if (response.ok) {
-            console.log(backend_url)
-
-                await fetch(`${backend_url}/history`, {
+                await fetch(`/api/history`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
