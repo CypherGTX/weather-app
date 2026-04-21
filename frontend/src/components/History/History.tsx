@@ -1,6 +1,7 @@
 import './History.css';
 import { useEffect, useState } from "react";
 
+
 type HistoryItem = {
   id: number;
   Location: string;
@@ -16,6 +17,8 @@ function History() {
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState("");
   const [date, setDate] = useState("");
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
+
 
   const fetchHistory = async (overrideCity: string = city, overrideDate: string = date) => {
     try {
@@ -26,9 +29,10 @@ function History() {
       if (overrideDate) params.append("date", overrideDate);
 
       const query = params.toString();
-      const url = `http://localhost:3000/api/history${query ? `?${query}` : ""}`;
+      const url = `${backend_url}/history${query ? `?${query}` : ""}`;
 
       const response = await fetch(url);
+      console.log(backend_url);
       const data = await response.json();
 
       setData(data);

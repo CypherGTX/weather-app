@@ -22,7 +22,7 @@ function Weather() {
     const search = async (city: string) => {
 
         try {
-            const url = `http://localhost:3000/api/weather?city=${city}`;
+            const url = `/api/weather?city=${encodeURIComponent(city)}`;
             const response = await fetch(url);
             const data = await response.json();
             console.log(data)
@@ -35,7 +35,7 @@ function Weather() {
             }
 
             if (response.ok) {
-                await fetch("http://localhost:3000/api/history", {
+                await fetch(`/api/history`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ function Weather() {
 
     return (
         <div className="weather">
-            <h1>Weather</h1>
+            <h1 className="mb-5">Weather</h1>
             <form className="search-bar mb-5" onSubmit={handleKeyDown}>
                 <input
                     type="text"
