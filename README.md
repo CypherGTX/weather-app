@@ -12,6 +12,14 @@ docker compose -f compose.yml -f compose.dev.yml up
 
 # Prod-like - built static files served by nginx on :8080
 docker compose up --build
+
+# Preview the final merged config before starting (resolves all env vars and overrides)
+docker compose -f compose.yml -f compose.dev.yml config   # dev
+docker compose config                                      # prod
+
+# Force rebuild images and recreate containers (e.g. after changing Dockerfile or dependencies)
+docker compose -f compose.yml -f compose.dev.yml up --build --force-recreate    # dev
+docker compose up --build --force-recreate                                      # prod
 ```
 
 ## Architecture decisions
